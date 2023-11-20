@@ -68,6 +68,15 @@ Partial Public Class SiteMaster
     Protected WithEvents CustomerHome12Btn As Global.System.Web.UI.WebControls.Button
 
     '''<summary>
+    '''ReservationBtn control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ReservationBtn As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
     '''LogoutBtn control.
     '''</summary>
     '''<remarks>

@@ -11,7 +11,7 @@ Option Strict On
 Option Explicit On
 
 
-Partial Public Class Places
+Partial Public Class Reservation
 
     '''<summary>
     '''SqlDataSource1 control.
@@ -30,33 +30,6 @@ Partial Public Class Places
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents DropDownList1 As Global.System.Web.UI.WebControls.DropDownList
-
-    '''<summary>
-    '''NameS control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents NameS As Global.System.Web.UI.WebControls.TextBox
-
-    '''<summary>
-    '''LocationS control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents LocationS As Global.System.Web.UI.WebControls.TextBox
-
-    '''<summary>
-    '''PriceS control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents PriceS As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
     '''CheckBox1 control.

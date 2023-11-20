@@ -43,6 +43,9 @@
                         </li> 
                         <li class="nav-item mt-1">   
                             <asp:Button ID="CustomerHome12Btn" class="nav-link active text-white" runat="server" Text="Home" BackColor="MidnightBlue" BorderColor="MidnightBlue" BorderStyle="None" />
+                        </li> 
+                        <li class="nav-item mt-1">   
+                            <asp:Button ID="ReservationBtn" class="nav-link active text-white" runat="server" Text="Reservation" BackColor="MidnightBlue" BorderColor="MidnightBlue" BorderStyle="None" />
                         </li>
                     </ul>
                     <div class="d-flex" role="search">

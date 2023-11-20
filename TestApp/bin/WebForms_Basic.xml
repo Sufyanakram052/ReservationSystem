@@ -208,6 +208,24 @@ Auto-generated field.
 To modify move field declaration from designer file to code-behind file.
 </remarks>
 </member>
+<member name="F:TestApp.Places._SqlDataSource1">
+<summary>
+SqlDataSource1 control.
+</summary>
+<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member>
+<member name="F:TestApp.Places._DropDownList1">
+<summary>
+DropDownList1 control.
+</summary>
+<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member>
 <member name="F:TestApp.Places._NameS">
 <summary>
 NameS control.
@@ -254,6 +272,51 @@ To modify move field declaration from designer file to code-behind file.
 </remarks>
 </member>
 <member name="F:TestApp.Places._GridView1">
+<summary>
+GridView1 control.
+</summary>
+<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member>
+<member name="F:TestApp.Reservation._SqlDataSource1">
+<summary>
+SqlDataSource1 control.
+</summary>
+<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member>
+<member name="F:TestApp.Reservation._DropDownList1">
+<summary>
+DropDownList1 control.
+</summary>
+<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member>
+<member name="F:TestApp.Reservation._CheckBox1">
+<summary>
+CheckBox1 control.
+</summary>
+<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member>
+<member name="F:TestApp.Reservation._saveAdmin1">
+<summary>
+saveAdmin1 control.
+</summary>
+<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member>
+<member name="F:TestApp.Reservation._GridView1">
 <summary>
 GridView1 control.
 </summary>
@@ -310,6 +373,15 @@ To modify move field declaration from designer file to code-behind file.
 <member name="F:TestApp.SiteMaster._CustomerHome12Btn">
 <summary>
 CustomerHome12Btn control.
+</summary>
+<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member>
+<member name="F:TestApp.SiteMaster._ReservationBtn">
+<summary>
+ReservationBtn control.
 </summary>
 <remarks>
 Auto-generated field.

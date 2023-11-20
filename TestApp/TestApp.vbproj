@@ -153,6 +153,7 @@
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Parking.aspx" />
     <Content Include="Places.aspx" />
+    <Content Include="Reservation.aspx" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
@@ -250,6 +251,13 @@
     <Compile Include="Places.aspx.vb">
       <DependentUpon>Places.aspx</DependentUpon>
       <SubType>ASPXCodebehind</SubType>
+    </Compile>
+    <Compile Include="Reservation.aspx.designer.vb">
+      <DependentUpon>Reservation.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Reservation.aspx.vb">
+      <DependentUpon>Reservation.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Site.Master.designer.vb">
       <DependentUpon>Site.Master</DependentUpon>

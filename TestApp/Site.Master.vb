@@ -18,6 +18,7 @@
             ParkingBtn.Visible = False
             PlacesBtn.Visible = False
             CustomerHome12Btn.Visible = False
+            ReservationBtn.Visible = False
 
             If Not (String.IsNullOrEmpty(Session("IsCustomer"))) Then
                 IsCustomer = Session("IsCustomer")
@@ -27,9 +28,11 @@
 
             If String.IsNullOrEmpty(IsCustomer) Then
                 CustomerHome12Btn.Visible = False
+                ReservationBtn.Visible = False
                 LogoutBtn.Visible = False
             Else
                 CustomerHome12Btn.Visible = True
+                ReservationBtn.Visible = True
                 LogoutBtn.Visible = True
             End If
         Else
@@ -40,6 +43,7 @@
             ParkingBtn.Visible = True
             PlacesBtn.Visible = True
             CustomerHome12Btn.Visible = False
+            ReservationBtn.Visible = False
 
         End If
 
@@ -70,6 +74,7 @@
         ParkingBtn.Visible = False
         PlacesBtn.Visible = False
         CustomerHome12Btn.Visible = False
+        ReservationBtn.Visible = False
         Response.Redirect("Default.aspx")
     End Sub
 
@@ -83,5 +88,8 @@
 
     Protected Sub CustomerHome12Btn_Click(sender As Object, e As EventArgs) Handles CustomerHome12Btn.Click
         Response.Redirect("CustomerHome.aspx")
+    End Sub
+    Protected Sub ReservationBtn_Click(sender As Object, e As EventArgs) Handles ReservationBtn.Click
+        Response.Redirect("Reservation.aspx")
     End Sub
 End Class

@@ -69,7 +69,7 @@ Public Class _Default
 
                     If result1 > 0 Then
                         Session("IsCustomer") = "True"
-                        Session("CustomerId") = result
+                        Session("CustomerId") = result1
                         Dim script As String = "<script>
                                        Swal.fire({
                                           title: 'Success!',

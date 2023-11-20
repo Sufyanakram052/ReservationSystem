@@ -1,17 +1,25 @@
 ﻿Imports System.Data.SqlClient
 
-Public Class Places
-    Inherits System.Web.UI.Page
-
-
+Public Class Reservation
+    Inherits Page
     Dim Con As New SqlConnection("Data Source=DESKTOP-5DVUDJE;Initial Catalog=ParkingReservation;Integrated Security=True;Connect Timeout=30")
-
-
     Dim Key = 0
+    Dim CustomerId = 0
+
+    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+        If Not IsPostBack Then
+            ' Only bind data if it's not a postback
+            BindDropDown()
+        End If
+        Populate()
+    End Sub
+
     Private Sub BindDropDown()
-        Dim query As String = "SELECT Id, Name FROM Parking"
+        Dim query As String = "SELECT Id, Name FROM Places where status = '" & True & "'"
         Con.Open()
         Using cmd As New SqlCommand(query, Con)
+
+
             Using reader As SqlDataReader = cmd.ExecuteReader()
                 DropDownList1.DataSource = reader
                 DropDownList1.DataBind()
@@ -19,11 +27,12 @@ Public Class Places
         End Using
         Con.Close()
     End Sub
+
     Private Sub Populate()
         Try
             Con.Open()
 
-            Dim query = "select pl.Id,pl.Name,pl.Location,pl.Price,pl.Status,pa.Name as ParkingName from Places pl left join Parking pa on pl.ParkingId = pa.Id"
+            Dim query = "Select r.Id, p.Name As PlaceName, c.Name As CustomerName,p.Price As PlacePrice,r.Status, pr.Name As ParkingName from Reservation r left join Places p on r.PlaceId = p.Id left join Parking pr on p.ParkingId = pr.Id left join Customers c on r.CustomerId = c.Id"
             Dim adapter As SqlDataAdapter = New SqlDataAdapter(query, Con)
             Dim builder As SqlCommandBuilder = New SqlCommandBuilder(adapter)
             Dim ds As DataSet = New DataSet
@@ -49,9 +58,9 @@ Public Class Places
     End Sub
 
     Protected Sub saveAdmin1_Click(sender As Object, e As EventArgs) Handles saveAdmin1.Click
-        Dim ParkingId = Convert.ToInt16(DropDownList1.SelectedValue)
-
+        Dim PlaceId = Convert.ToInt16(DropDownList1.SelectedValue)
         Key = If(Integer.TryParse(Session("SelectedPlacesId")?.ToString(), Key), Key, 0)
+        CustomerId = If(Integer.TryParse(Session("CustomerId")?.ToString(), CustomerId), CustomerId, 0)
         Dim Status As Boolean = False
 
         If CheckBox1.Checked Then
@@ -60,21 +69,17 @@ Public Class Places
             Status = False
         End If
         If Key > 0 Then
-
-            If NameS.Text = "" Or LocationS.Text = "" Or PriceS.Text = "" Or ParkingId = 0 Then
+            If PlaceId = 0 Or String.IsNullOrEmpty(CustomerId) Then
                 MsgBox("Please fill all the fieldes.")
             Else
                 Con.Open()
                 Dim query As String
-                query = "Update Places set Name='" & NameS.Text & "',Location='" & LocationS.Text & "',Price='" & PriceS.Text & "',Status='" & Status & "',ParkingId='" & ParkingId & "' where Id='" & Key & "'"
+                query = "Update Reservation set PlaceId='" & PlaceId & "',CustomerId='" & CustomerId & "',Status='" & Status & "' where Id='" & Key & "'"
                 Dim cmd As SqlCommand
                 cmd = New SqlCommand(query, Con)
                 cmd.ExecuteNonQuery()
-                MsgBox("Places Updated Successfully.")
+                MsgBox("Reservation Updated Successfully.")
                 Con.Close()
-                NameS.Text = ""
-                LocationS.Text = ""
-                PriceS.Text = ""
                 CheckBox1.Checked = False
                 Key = 0
                 Session("SelectedPlacesId") = Key
@@ -82,17 +87,14 @@ Public Class Places
             End If
 
         Else
-            Dim Name1 = NameS.Text
-            Dim Location1 = LocationS.Text
-
-            If NameS.Text = "" Or LocationS.Text = "" Or PriceS.Text = "" Or ParkingId = 0 Then
-                MsgBox("Please fill all the fields.")
+            If PlaceId = 0 Or String.IsNullOrEmpty(CustomerId) Then
+                MsgBox("Please fill all the fieldes.")
             Else
                 Try
                     Con.Open()
 
-                    ' Query to get the maximum Id from the Places table
-                    Dim getMaxIdQuery As String = "SELECT MAX(Id) FROM Places"
+                    ' Query to get the maximum Id from the Reservation table
+                    Dim getMaxIdQuery As String = "SELECT MAX(Id) FROM Reservation"
                     Dim cmdGetMaxId As New SqlCommand(getMaxIdQuery, Con)
 
                     ' ExecuteScalar is used to get a single value (in this case, the maximum Id)
@@ -118,22 +120,16 @@ Public Class Places
                     End If
 
                     ' Insert the new record with the calculated Id
-                    Dim insertQuery As String = "INSERT INTO Places (Id, Name, Location, Price, Status,ParkingId) VALUES (@Id, @Name, @Location, @Price, @Status, @ParkingId)"
+                    Dim insertQuery As String = "INSERT INTO Reservation (Id, PlaceId, CustomerId, Status) VALUES (@Id, @PlaceId, @CustomerId, @Status)"
                     Dim cmdInsert As New SqlCommand(insertQuery, Con)
                     cmdInsert.Parameters.AddWithValue("@Id", newId)
-                    cmdInsert.Parameters.AddWithValue("@Name", Name1)
-                    cmdInsert.Parameters.AddWithValue("@Location", Location1)
-                    cmdInsert.Parameters.AddWithValue("@Price", PriceS.Text)
+                    cmdInsert.Parameters.AddWithValue("@PlaceId", PlaceId)
+                    cmdInsert.Parameters.AddWithValue("@CustomerId", CustomerId)
                     cmdInsert.Parameters.AddWithValue("@Status", Status)
-                    cmdInsert.Parameters.AddWithValue("@ParkingId", ParkingId)
-
                     cmdInsert.ExecuteNonQuery()
 
-                    MsgBox("Places Saved Successfully.")
+                    MsgBox("Reservation Saved Successfully.")
 
-                    NameS.Text = ""
-                    LocationS.Text = ""
-                    PriceS.Text = ""
                     CheckBox1.Checked = False
                     Key = 0
                     Session("SelectedPlacesId") = Key
@@ -155,7 +151,7 @@ Public Class Places
             Dim Id As Integer = Integer.Parse(GridView1.SelectedRow.Cells(0).Text)
             Con.Open()
             Using Con
-                Dim query As String = "SELECT * FROM Places WHERE id = @Id"
+                Dim query As String = "SELECT * FROM Reservation WHERE id = @Id"
 
                 Using command As New SqlCommand(query, Con)
                     command.Parameters.AddWithValue("@Id", Id)
@@ -163,11 +159,8 @@ Public Class Places
                     Using reader As SqlDataReader = command.ExecuteReader()
                         If reader.Read() Then
                             ' Data found, populate the textboxes
-                            NameS.Text = reader("Name").ToString()
-                            LocationS.Text = reader("Location").ToString()
-                            PriceS.Text = reader("Price")
+                            DropDownList1.SelectedValue = reader("PlaceId")
                             CheckBox1.Checked = reader("Status")
-                            DropDownList1.SelectedValue = reader("ParkingId")
                             Key = reader("Id")
                             Session("SelectedPlacesId") = Key
                             ' You may also store the ID in a variable for further use
@@ -199,11 +192,11 @@ Public Class Places
             Dim Id As Integer = Integer.Parse(GridView1.Rows(index).Cells(0).Text)
 
             Con.Open()
-            Dim query As String = "DELETE FROM Places WHERE Id = @Id"
+            Dim query As String = "DELETE FROM Reservation WHERE Id = @Id"
             Dim cmd As SqlCommand = New SqlCommand(query, Con)
             cmd.Parameters.AddWithValue("@Id", Id)
             cmd.ExecuteNonQuery()
-            MsgBox("Places Deleted Successfully.")
+            MsgBox("Reservation Deleted Successfully.")
             Con.Close()
             Populate()
         Catch ex As Exception
@@ -211,14 +204,4 @@ Public Class Places
             MsgBox("An error occurred: " & ex.Message)
         End Try
     End Sub
-    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
-        Populate()
-        If Not IsPostBack Then
-            ' Only bind data if it's not a postback
-            BindDropDown()
-        End If
-    End Sub
-
-
-
 End Class

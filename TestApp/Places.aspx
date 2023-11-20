@@ -19,6 +19,12 @@
                     <div class="card-body">
                        <div class="col-md-12">
                            <div class="row">
+                                <div class="col-sm-12 mb-3">
+                                    <label for="name" class="form-label">Select Parking:</label>
+                                    <asp:SqlDataSource ID="SqlDataSource1" runat="server" ConnectionString="Data Source=DESKTOP-5DVUDJE;Initial Catalog=ParkingReservation;Integrated Security=True;Connect Timeout=30" SelectCommand="SELECT Id, Name FROM Parking"></asp:SqlDataSource>
+                                    <asp:DropDownList ID="DropDownList1" class="form-control col-sm-12" runat="server" DataTextField="Name" DataValueField="Id"></asp:DropDownList>
+                                </div>
+
                                <div class="col-sm-12 mb-3">
                                   <label for="name" class="form-label">Name:</label>
                                    <asp:TextBox ID="NameS" type="name" class="form-control"   runat="server" placeholder="Your Name" ViewStateMode="Enabled"></asp:TextBox>
@@ -53,6 +59,7 @@
                         <asp:BoundField DataField="Location" HeaderText="Location" SortExpression="Location" />
                         <asp:BoundField DataField="Price" HeaderText="Price" SortExpression="Price" />
                         <asp:BoundField DataField="Status" HeaderText="Status" SortExpression="Status" />
+                        <asp:BoundField DataField="ParkingName" HeaderText="ParkingName" SortExpression="ParkingName" />
 
 
                         <asp:CommandField SelectText="Edit" ShowSelectButton="True" ControlStyle-CssClass="btn btn-warning" />
