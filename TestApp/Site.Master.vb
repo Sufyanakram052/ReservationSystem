@@ -43,7 +43,7 @@
             ParkingBtn.Visible = True
             PlacesBtn.Visible = True
             CustomerHome12Btn.Visible = False
-            ReservationBtn.Visible = False
+            ReservationBtn.Visible = True
 
         End If
 

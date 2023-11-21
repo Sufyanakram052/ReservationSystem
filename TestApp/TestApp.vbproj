@@ -152,6 +152,7 @@
     <Content Include="Content\bootstrap-theme.css.map" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Parking.aspx" />
+    <Content Include="Payment.aspx" />
     <Content Include="Places.aspx" />
     <Content Include="Reservation.aspx" />
     <Content Include="Scripts\bootstrap.js" />
@@ -243,6 +244,13 @@
     </Compile>
     <Compile Include="Parking.aspx.vb">
       <DependentUpon>Parking.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
+    <Compile Include="Payment.aspx.designer.vb">
+      <DependentUpon>Payment.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Payment.aspx.vb">
+      <DependentUpon>Payment.aspx</DependentUpon>
       <SubType>ASPXCodebehind</SubType>
     </Compile>
     <Compile Include="Places.aspx.designer.vb">

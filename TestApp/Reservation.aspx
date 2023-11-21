@@ -26,11 +26,11 @@
                                     <asp:DropDownList ID="DropDownList1" class="form-control col-sm-12" runat="server" DataTextField="Name" DataValueField="Id"></asp:DropDownList>
                                 </div>
 
-                                <div class="col-md-12">
+                                <%--<div class="col-md-12">
                                     <asp:CheckBox ID="CheckBox1" runat="server" />
 
                                     &nbsp;Status
-                                </div>
+                                </div>--%>
                                 <div class="col-sm-3 mb-3">
                                     <asp:Button ID="saveAdmin1" class="btn btn-primary col-sm-12" runat="server" Text="Save" />
                                 </div>
@@ -49,7 +49,7 @@
                         <asp:BoundField DataField="CustomerName" HeaderText="CustomerName" SortExpression="CustomerName" />
                         <asp:BoundField DataField="PlacePrice" HeaderText="PlacePrice" SortExpression="PlacePrice" />
                         <asp:BoundField DataField="ParkingName" HeaderText="ParkingName" SortExpression="ParkingName" />
-                        <asp:BoundField DataField="Status" HeaderText="Status" SortExpression="Status" />
+                        <%--<asp:BoundField DataField="Status" HeaderText="Status" SortExpression="Status" />--%>
 
 
                         <asp:CommandField SelectText="Edit" ShowSelectButton="True" ControlStyle-CssClass="btn btn-warning" />

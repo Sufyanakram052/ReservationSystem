@@ -39,4 +39,49 @@ Partial Public Class _Default
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ButtonLogin As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''NameS control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents NameS As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''EmailS control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents EmailS As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''PasswordS control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents PasswordS As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''PhoneS control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents PhoneS As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''saveCustomer control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents saveCustomer As Global.System.Web.UI.WebControls.Button
 End Class

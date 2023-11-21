@@ -172,6 +172,51 @@ Auto-generated field.
 To modify move field declaration from designer file to code-behind file.
 </remarks>
 </member>
+<member name="F:TestApp._Default._NameS">
+<summary>
+NameS control.
+</summary>
+<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member>
+<member name="F:TestApp._Default._EmailS">
+<summary>
+EmailS control.
+</summary>
+<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member>
+<member name="F:TestApp._Default._PasswordS">
+<summary>
+PasswordS control.
+</summary>
+<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member>
+<member name="F:TestApp._Default._PhoneS">
+<summary>
+PhoneS control.
+</summary>
+<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member>
+<member name="F:TestApp._Default._saveCustomer">
+<summary>
+saveCustomer control.
+</summary>
+<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member>
 <member name="F:TestApp.Parking._NameS">
 <summary>
 NameS control.
@@ -292,15 +337,6 @@ To modify move field declaration from designer file to code-behind file.
 <member name="F:TestApp.Reservation._DropDownList1">
 <summary>
 DropDownList1 control.
-</summary>
-<remarks>
-Auto-generated field.
-To modify move field declaration from designer file to code-behind file.
-</remarks>
-</member>
-<member name="F:TestApp.Reservation._CheckBox1">
-<summary>
-CheckBox1 control.
 </summary>
 <remarks>
 Auto-generated field.

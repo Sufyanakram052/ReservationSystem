@@ -8,10 +8,19 @@ Public Class About
     Dim Key = 0
     Protected Sub saveAdmin1_Click(sender As Object, e As EventArgs) Handles saveAdmin1.Click
         Key = If(Integer.TryParse(Session("SelectedAdminId")?.ToString(), Key), Key, 0)
-        If Key > 0 Then
 
+        If Key > 0 Then
             If NameS.Text = "" Or EmailS.Text = "" Or PasswordS.Text = "" Then
-                MsgBox("Please fill all the fielss.")
+                Dim script As String = "<script>
+                                       Swal.fire({
+                                          title: 'Error!',
+                                          text: 'Please fill all the fields.',
+                                          icon: 'error',
+                                          confirmButtonText: 'OK'
+                                       });
+                                    </script>"
+
+                ClientScript.RegisterStartupScript(Me.GetType(), "SweetAlert", script)
             Else
                 Con.Open()
                 Dim query As String
@@ -19,7 +28,16 @@ Public Class About
                 Dim cmd As SqlCommand
                 cmd = New SqlCommand(query, Con)
                 cmd.ExecuteNonQuery()
-                MsgBox("Admin Updated Successfully.")
+                Dim script As String = "<script>
+                                       Swal.fire({
+                                          title: 'Success!',
+                                          text: 'Admin Updated Successfully.',
+                                          icon: 'success',
+                                          confirmButtonText: 'OK'
+                                       });
+                                    </script>"
+
+                ClientScript.RegisterStartupScript(Me.GetType(), "SweetAlert", script)
                 Con.Close()
                 NameS.Text = ""
                 EmailS.Text = ""
@@ -28,62 +46,100 @@ Public Class About
                 Session("SelectedAdminId") = Key
                 Populate()
             End If
-
         Else
             Dim Name1 = NameS.Text
             Dim Email1 = EmailS.Text
             Dim Password1 = PasswordS.Text
             If Name1 = "" Or Email1 = "" Or Password1 = "" Then
-                MsgBox("Please fill all the fields.")
+                Dim script As String = "<script>
+                                       Swal.fire({
+                                          title: 'Error!',
+                                          text: 'Please fill all the fields.',
+                                          icon: 'error',
+                                          confirmButtonText: 'OK'
+                                       });
+                                    </script>"
+
+                ClientScript.RegisterStartupScript(Me.GetType(), "SweetAlert", script)
+                'MsgBox("Please fill all the fields.")
             Else
                 Try
                     Con.Open()
 
-                    ' Query to get the maximum Id from the Admin table
-                    Dim getMaxIdQuery As String = "SELECT MAX(Id) FROM Admin"
-                    Dim cmdGetMaxId As New SqlCommand(getMaxIdQuery, Con)
+                    ' Check if the email already exists in the Admin table
+                    If EmailExistsInTable("Admin", Email1) Then
+                        Dim script As String = "<script>
+                                       Swal.fire({
+                                          title: 'Error!',
+                                          text: 'Email already exists',
+                                          icon: 'error',
+                                          confirmButtonText: 'OK'
+                                       });
+                                    </script>"
 
-                    ' ExecuteScalar is used to get a single value (in this case, the maximum Id)
-                    Dim maxId As Object = cmdGetMaxId.ExecuteScalar()
+                        ClientScript.RegisterStartupScript(Me.GetType(), "SweetAlert", script)
+                        'MsgBox("Error: Email already exists in the Admin table.")
+                    ElseIf EmailExistsInTable("Customers", Email1) Then
+                        Dim script As String = "<script>
+                                       Swal.fire({
+                                          title: 'Error!',
+                                          text: 'Email already exists',
+                                          icon: 'error',
+                                          confirmButtonText: 'OK'
+                                       });
+                                    </script>"
 
-                    ' Debugging information - print maxId to console
-                    Console.WriteLine("Debug - maxId: " & If(maxId IsNot Nothing, maxId.ToString(), "null"))
-
-                    ' Check if the result is DBNull before casting
-                    Dim newId As Integer
-
-                    If maxId IsNot DBNull.Value Then
-                        If Integer.TryParse(maxId.ToString(), newId) Then
-                            ' Increment the maximum Id to get the new Id
-                            newId += 1
-                        Else
-                            ' Handle the case where parsing fails
-                            MsgBox("Error: Unable to parse maximum Id from the database.")
-                        End If
+                        ClientScript.RegisterStartupScript(Me.GetType(), "SweetAlert", script)
+                        'MsgBox("Error: Email already exists in the Customer table.")
                     Else
-                        ' Set newId to 0 when maxId is DBNull
-                        newId = 1
+                        ' Continue with the insertion
+                        ' Query to get the maximum Id from the Admin table
+                        Dim getMaxIdQuery As String = "SELECT MAX(Id) FROM Admin"
+                        Dim cmdGetMaxId As New SqlCommand(getMaxIdQuery, Con)
+
+                        Dim maxId As Object = cmdGetMaxId.ExecuteScalar()
+
+                        Console.WriteLine("Debug - maxId: " & If(maxId IsNot Nothing, maxId.ToString(), "null"))
+
+                        Dim newId As Integer
+
+                        If maxId IsNot DBNull.Value Then
+                            If Integer.TryParse(maxId.ToString(), newId) Then
+                                newId += 1
+                            Else
+                                MsgBox("Error: Unable to parse maximum Id from the database.")
+                            End If
+                        Else
+                            newId = 1
+                        End If
+
+                        Dim insertQuery As String = "INSERT INTO Admin (Id, Name, Email, Password) VALUES (@Id, @Name, @Email, @Password)"
+                        Dim cmdInsert As New SqlCommand(insertQuery, Con)
+                        cmdInsert.Parameters.AddWithValue("@Id", newId)
+                        cmdInsert.Parameters.AddWithValue("@Name", Name1)
+                        cmdInsert.Parameters.AddWithValue("@Email", Email1)
+                        cmdInsert.Parameters.AddWithValue("@Password", Password1)
+
+                        cmdInsert.ExecuteNonQuery()
+                        Dim script As String = "<script>
+                                       Swal.fire({
+                                          title: 'Success!',
+                                          text: 'Admin Saved Successfully.',
+                                          icon: 'success',
+                                          confirmButtonText: 'OK'
+                                       });
+                                    </script>"
+
+                        ClientScript.RegisterStartupScript(Me.GetType(), "SweetAlert", script)
+                        'MsgBox("Admin Saved Successfully.")
+
+                        NameS.Text = ""
+                        EmailS.Text = ""
+                        PasswordS.Text = ""
+                        Key = 0
+                        Session("SelectedAdminId") = Key
                     End If
-
-                    ' Insert the new record with the calculated Id
-                    Dim insertQuery As String = "INSERT INTO Admin (Id, Name, Email, Password) VALUES (@Id, @Name, @Email, @Password)"
-                    Dim cmdInsert As New SqlCommand(insertQuery, Con)
-                    cmdInsert.Parameters.AddWithValue("@Id", newId)
-                    cmdInsert.Parameters.AddWithValue("@Name", Name1)
-                    cmdInsert.Parameters.AddWithValue("@Email", Email1)
-                    cmdInsert.Parameters.AddWithValue("@Password", Password1)
-
-                    cmdInsert.ExecuteNonQuery()
-
-                    MsgBox("Admin Saved Successfully.")
-
-                    NameS.Text = ""
-                    EmailS.Text = ""
-                    PasswordS.Text = ""
-                    Key = 0
-                    Session("SelectedAdminId") = Key
                 Catch ex As Exception
-                    ' Handle exceptions
                     MsgBox("An error occurred: " & ex.Message & vbCrLf & ex.StackTrace)
                 Finally
                     If Con.State = ConnectionState.Open Then
@@ -93,8 +149,18 @@ Public Class About
                 End Try
             End If
         End If
-
     End Sub
+
+    ' Function to check if the email exists in a given table
+    Private Function EmailExistsInTable(tableName As String, email As String) As Boolean
+        Dim emailExistsQuery As String = $"SELECT COUNT(*) FROM {tableName} WHERE Email = @Email"
+        Dim cmdEmailExists As New SqlCommand(emailExistsQuery, Con)
+        cmdEmailExists.Parameters.AddWithValue("@Email", email)
+
+        Dim emailExistsCount As Integer = Convert.ToInt32(cmdEmailExists.ExecuteScalar())
+
+        Return emailExistsCount > 0
+    End Function
 
 
     Private Sub Populate()
@@ -148,6 +214,7 @@ Public Class About
                             PasswordS.Text = reader("Password").ToString()
                             Key = reader("Id")
                             Session("SelectedAdminId") = Key
+                            ClientScript.RegisterStartupScript(Me.GetType(), "ShowModal", "<script type='text/javascript'>showModal();</script>")
                             ' You may also store the ID in a variable for further use
                             ' Key = Id
                         Else
@@ -181,7 +248,17 @@ Public Class About
             Dim cmd As SqlCommand = New SqlCommand(query, Con)
             cmd.Parameters.AddWithValue("@Id", Id)
             cmd.ExecuteNonQuery()
-            MsgBox("User Deleted Successfully.")
+            Dim script As String = "<script>
+                                       Swal.fire({
+                                          title: 'Success!',
+                                          text: 'Admin Deleted Successfully.',
+                                          icon: 'success',
+                                          confirmButtonText: 'OK'
+                                       });
+                                    </script>"
+
+            ClientScript.RegisterStartupScript(Me.GetType(), "SweetAlert", script)
+            'MsgBox("User Deleted Successfully.")
             Con.Close()
             Populate()
         Catch ex As Exception

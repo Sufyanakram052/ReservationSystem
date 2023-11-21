@@ -32,7 +32,19 @@ Public Class Reservation
         Try
             Con.Open()
 
-            Dim query = "Select r.Id, p.Name As PlaceName, c.Name As CustomerName,p.Price As PlacePrice,r.Status, pr.Name As ParkingName from Reservation r left join Places p on r.PlaceId = p.Id left join Parking pr on p.ParkingId = pr.Id left join Customers c on r.CustomerId = c.Id"
+            Dim CustomerId = 0
+            Dim AdminId = 0
+            Dim query = ""
+            AdminId = If(Integer.TryParse(Session("AdminId")?.ToString(), AdminId), AdminId, 0)
+
+            If AdminId > 0 Then
+                query = "Select r.Id, p.Name As PlaceName, c.Name As CustomerName,p.Price As PlacePrice,r.Status, pr.Name As ParkingName from Reservation r left join Places p on r.PlaceId = p.Id left join Parking pr on p.ParkingId = pr.Id left join Customers c on r.CustomerId = c.Id"
+            Else
+                CustomerId = If(Integer.TryParse(Session("CustomerId")?.ToString(), AdminId), AdminId, 0)
+
+                query = "Select r.Id, p.Name As PlaceName, c.Name As CustomerName,p.Price As PlacePrice,r.Status, pr.Name As ParkingName from Reservation r left join Places p on r.PlaceId = p.Id left join Parking pr on p.ParkingId = pr.Id left join Customers c on r.CustomerId = c.Id where CustomerId='" & CustomerId & "' "
+            End If
+
             Dim adapter As SqlDataAdapter = New SqlDataAdapter(query, Con)
             Dim builder As SqlCommandBuilder = New SqlCommandBuilder(adapter)
             Dim ds As DataSet = New DataSet
@@ -63,11 +75,11 @@ Public Class Reservation
         CustomerId = If(Integer.TryParse(Session("CustomerId")?.ToString(), CustomerId), CustomerId, 0)
         Dim Status As Boolean = False
 
-        If CheckBox1.Checked Then
-            Status = True
-        Else
-            Status = False
-        End If
+        'If CheckBox1.Checked Then
+        '    Status = True
+        'Else
+        '    Status = False
+        'End If
         If Key > 0 Then
             If PlaceId = 0 Or String.IsNullOrEmpty(CustomerId) Then
                 MsgBox("Please fill all the fieldes.")
@@ -80,7 +92,7 @@ Public Class Reservation
                 cmd.ExecuteNonQuery()
                 MsgBox("Reservation Updated Successfully.")
                 Con.Close()
-                CheckBox1.Checked = False
+                ' CheckBox1.Checked = False
                 Key = 0
                 Session("SelectedPlacesId") = Key
                 Populate()
@@ -130,7 +142,7 @@ Public Class Reservation
 
                     MsgBox("Reservation Saved Successfully.")
 
-                    CheckBox1.Checked = False
+                    'CheckBox1.Checked = False
                     Key = 0
                     Session("SelectedPlacesId") = Key
                 Catch ex As Exception
@@ -160,7 +172,7 @@ Public Class Reservation
                         If reader.Read() Then
                             ' Data found, populate the textboxes
                             DropDownList1.SelectedValue = reader("PlaceId")
-                            CheckBox1.Checked = reader("Status")
+                            'CheckBox1.Checked = reader("Status")
                             Key = reader("Id")
                             Session("SelectedPlacesId") = Key
                             ' You may also store the ID in a variable for further use
