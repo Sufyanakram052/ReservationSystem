@@ -41,6 +41,33 @@ Partial Public Class Reservation
     Protected WithEvents saveAdmin1 As Global.System.Web.UI.WebControls.Button
 
     '''<summary>
+    '''PayReciptS control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents PayReciptS As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''DateS control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents DateS As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''Button1 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents Button1 As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
     '''GridView1 control.
     '''</summary>
     '''<remarks>

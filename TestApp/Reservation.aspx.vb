@@ -1,4 +1,5 @@
 ﻿Imports System.Data.SqlClient
+Imports System.Web.DynamicData
 
 Public Class Reservation
     Inherits Page
@@ -73,7 +74,7 @@ Public Class Reservation
         Dim PlaceId = Convert.ToInt16(DropDownList1.SelectedValue)
         Key = If(Integer.TryParse(Session("SelectedPlacesId")?.ToString(), Key), Key, 0)
         CustomerId = If(Integer.TryParse(Session("CustomerId")?.ToString(), CustomerId), CustomerId, 0)
-        Dim Status As Boolean = False
+        Dim Status As Boolean = True
 
         'If CheckBox1.Checked Then
         '    Status = True
@@ -82,7 +83,16 @@ Public Class Reservation
         'End If
         If Key > 0 Then
             If PlaceId = 0 Or String.IsNullOrEmpty(CustomerId) Then
-                MsgBox("Please fill all the fieldes.")
+                Dim script As String = "<script>
+                                       Swal.fire({
+                                          title: 'Error!',
+                                          text: 'Please fill all fields.',
+                                          icon: 'error',
+                                          confirmButtonText: 'OK'
+                                       });
+                                    </script>"
+
+                ClientScript.RegisterStartupScript(Me.GetType(), "SweetAlert", script)
             Else
                 Con.Open()
                 Dim query As String
@@ -90,7 +100,16 @@ Public Class Reservation
                 Dim cmd As SqlCommand
                 cmd = New SqlCommand(query, Con)
                 cmd.ExecuteNonQuery()
-                MsgBox("Reservation Updated Successfully.")
+                Dim script As String = "<script>
+                                       Swal.fire({
+                                          title: 'Success!',
+                                          text: 'Data has been Updated Successfully.',
+                                          icon: 'success',
+                                          confirmButtonText: 'OK'
+                                       });
+                                    </script>"
+
+                ClientScript.RegisterStartupScript(Me.GetType(), "SweetAlert", script)
                 Con.Close()
                 ' CheckBox1.Checked = False
                 Key = 0
@@ -100,7 +119,16 @@ Public Class Reservation
 
         Else
             If PlaceId = 0 Or String.IsNullOrEmpty(CustomerId) Then
-                MsgBox("Please fill all the fieldes.")
+                Dim script As String = "<script>
+                                       Swal.fire({
+                                          title: 'Error!',
+                                          text: 'Please fill all fields.',
+                                          icon: 'error',
+                                          confirmButtonText: 'OK'
+                                       });
+                                    </script>"
+
+                ClientScript.RegisterStartupScript(Me.GetType(), "SweetAlert", script)
             Else
                 Try
                     Con.Open()
@@ -140,7 +168,16 @@ Public Class Reservation
                     cmdInsert.Parameters.AddWithValue("@Status", Status)
                     cmdInsert.ExecuteNonQuery()
 
-                    MsgBox("Reservation Saved Successfully.")
+                    Dim script As String = "<script>
+                                       Swal.fire({
+                                          title: 'Success!',
+                                          text: 'Data has been Added Successfully.',
+                                          icon: 'success',
+                                          confirmButtonText: 'OK'
+                                       });
+                                    </script>"
+
+                    ClientScript.RegisterStartupScript(Me.GetType(), "SweetAlert", script)
 
                     'CheckBox1.Checked = False
                     Key = 0
@@ -208,12 +245,142 @@ Public Class Reservation
             Dim cmd As SqlCommand = New SqlCommand(query, Con)
             cmd.Parameters.AddWithValue("@Id", Id)
             cmd.ExecuteNonQuery()
-            MsgBox("Reservation Deleted Successfully.")
+            Dim script As String = "<script>
+                                       Swal.fire({
+                                          title: 'Success!',
+                                          text: 'Data has been Deleted Successfully.',
+                                          icon: 'success',
+                                          confirmButtonText: 'OK'
+                                       });
+                                    </script>"
+
+            ClientScript.RegisterStartupScript(Me.GetType(), "SweetAlert", script)
             Con.Close()
             Populate()
         Catch ex As Exception
             ' Handle exceptions
             MsgBox("An error occurred: " & ex.Message)
         End Try
+        Response.Redirect(Request.Url.ToString(), True)
+
+    End Sub
+
+
+    Protected Sub GridView1_RowEditing(ByVal sender As Object, ByVal e As GridViewEditEventArgs) Handles GridView1.RowEditing
+
+        Dim rowIndex As Integer = e.NewEditIndex
+
+        Dim Id As Integer = Integer.Parse(GridView1.DataKeys(rowIndex).Values("Id").ToString())
+
+        Con.Open()
+        Using Con
+            Dim query As String = "SELECT * FROM Reservation WHERE id = @Id And Status= '" & True & "'"
+
+            Using command As New SqlCommand(query, Con)
+                command.Parameters.AddWithValue("@Id", Id)
+
+                Using reader As SqlDataReader = command.ExecuteReader()
+                    If reader.Read() Then
+
+
+                        Session("ReseverId") = Id
+                        ClientScript.RegisterStartupScript(Me.GetType(), "ShowModal", "<script type='text/javascript'>showModal();</script>")
+                        ' You may also store the ID in a variable for further use
+                        ' Key = Id
+                    Else
+                        ' No data found for the selected ID
+                        ' Handle the case where the ID doesn't exist in the database
+                        Dim script As String = "<script>
+                                           Swal.fire({
+                                              title: 'Error!',
+                                              text: 'You have already done the payment.',
+                                              icon: 'error',
+                                              confirmButtonText: 'OK'
+                                           }).then(function() {
+                                              window.location.href = 'Reservation.aspx';
+                                           });
+                                        </script>"
+
+                        ClientScript.RegisterStartupScript(Me.GetType(), "SweetAlert", script)
+
+                    End If
+                End Using
+            End Using
+        End Using
+
+    End Sub
+
+    Protected Sub GridView1_RowCancelingEdit(ByVal sender As Object, ByVal e As GridViewCancelEditEventArgs) Handles GridView1.RowCancelingEdit
+        Populate()
+        Response.Redirect(Request.Url.ToString(), True)
+
+    End Sub
+
+    Protected Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+        Dim resverId = 0
+        resverId = If(Integer.TryParse(Session("ReseverId")?.ToString(), resverId), resverId, 0)
+
+
+
+        If resverId > 0 Then
+            Con.Open()
+            ' Query to get the maximum Id from the Reservation table
+            Dim getMaxIdQuery As String = "SELECT MAX(Id) FROM Payment"
+            Dim cmdGetMaxId As New SqlCommand(getMaxIdQuery, Con)
+
+            ' ExecuteScalar is used to get a single value (in this case, the maximum Id)
+            Dim maxId As Object = cmdGetMaxId.ExecuteScalar()
+
+            ' Debugging information - print maxId to console
+            Console.WriteLine("Debug - maxId: " & If(maxId IsNot Nothing, maxId.ToString(), "null"))
+
+            ' Check if the result is DBNull before casting
+            Dim newId As Integer
+
+            If maxId IsNot DBNull.Value Then
+                If Integer.TryParse(maxId.ToString(), newId) Then
+                    ' Increment the maximum Id to get the new Id
+                    newId += 1
+                Else
+                    ' Handle the case where parsing fails
+                    MsgBox("Error: Unable to parse maximum Id from the database.")
+                End If
+            Else
+                ' Set newId to 0 when maxId is DBNull
+                newId = 1
+            End If
+
+            Dim insertQuery As String = "INSERT INTO Payment (Id, ReservationId, PayReceipt, PaymentDate) VALUES (@Id, @ReservationId, @PayReceipt, @PaymentDate)"
+            Dim cmdInsert As New SqlCommand(insertQuery, Con)
+            cmdInsert.Parameters.AddWithValue("@Id", newId)
+            cmdInsert.Parameters.AddWithValue("@ReservationId", resverId)
+            cmdInsert.Parameters.AddWithValue("@PayReceipt", PayReciptS.Text)
+            cmdInsert.Parameters.AddWithValue("@PaymentDate", Convert.ToDateTime(DateS.Text))
+            cmdInsert.ExecuteNonQuery()
+
+            Dim query As String
+            query = "Update Reservation set Status = '" & False & "' where Id= '" & resverId & "'"
+            Dim cmd As SqlCommand
+            cmd = New SqlCommand(query, Con)
+            cmd.ExecuteNonQuery()
+
+            Dim script As String = "<script>
+                                       Swal.fire({
+                                          title: 'Success!',
+                                          text: 'Data has been added successfully.',
+                                          icon: 'success',
+                                          confirmButtonText: 'OK'
+                                       }).then(function() {
+                                              window.location.href = 'Reservation.aspx';
+                                           });
+                                    </script>"
+
+            ClientScript.RegisterStartupScript(Me.GetType(), "SweetAlert", script)
+
+            Con.Close()
+        End If
+
+
+
     End Sub
 End Class

@@ -62,7 +62,16 @@ Public Class Places
         If Key > 0 Then
 
             If NameS.Text = "" Or LocationS.Text = "" Or PriceS.Text = "" Or ParkingId = 0 Then
-                MsgBox("Please fill all the fieldes.")
+                Dim script As String = "<script>
+                                       Swal.fire({
+                                          title: 'Error!',
+                                          text: 'Please fill all fields.',
+                                          icon: 'error',
+                                          confirmButtonText: 'OK'
+                                       });
+                                    </script>"
+
+                ClientScript.RegisterStartupScript(Me.GetType(), "SweetAlert", script)
             Else
                 Con.Open()
                 Dim query As String
@@ -70,7 +79,16 @@ Public Class Places
                 Dim cmd As SqlCommand
                 cmd = New SqlCommand(query, Con)
                 cmd.ExecuteNonQuery()
-                MsgBox("Places Updated Successfully.")
+                Dim script As String = "<script>
+                                       Swal.fire({
+                                          title: 'Success!',
+                                          text: 'Data has been Updated Successfully.',
+                                          icon: 'success',
+                                          confirmButtonText: 'OK'
+                                       });
+                                    </script>"
+
+                ClientScript.RegisterStartupScript(Me.GetType(), "SweetAlert", script)
                 Con.Close()
                 NameS.Text = ""
                 LocationS.Text = ""
@@ -86,7 +104,16 @@ Public Class Places
             Dim Location1 = LocationS.Text
 
             If NameS.Text = "" Or LocationS.Text = "" Or PriceS.Text = "" Or ParkingId = 0 Then
-                MsgBox("Please fill all the fields.")
+                Dim script As String = "<script>
+                                       Swal.fire({
+                                          title: 'Error!',
+                                          text: 'Please fill all fields.',
+                                          icon: 'error',
+                                          confirmButtonText: 'OK'
+                                       });
+                                    </script>"
+
+                ClientScript.RegisterStartupScript(Me.GetType(), "SweetAlert", script)
             Else
                 Try
                     Con.Open()
@@ -129,7 +156,16 @@ Public Class Places
 
                     cmdInsert.ExecuteNonQuery()
 
-                    MsgBox("Places Saved Successfully.")
+                    Dim script As String = "<script>
+                                       Swal.fire({
+                                          title: 'Success!',
+                                          text: 'Data has been Added Successfully.',
+                                          icon: 'success',
+                                          confirmButtonText: 'OK'
+                                       });
+                                    </script>"
+
+                    ClientScript.RegisterStartupScript(Me.GetType(), "SweetAlert", script)
 
                     NameS.Text = ""
                     LocationS.Text = ""
@@ -203,7 +239,16 @@ Public Class Places
             Dim cmd As SqlCommand = New SqlCommand(query, Con)
             cmd.Parameters.AddWithValue("@Id", Id)
             cmd.ExecuteNonQuery()
-            MsgBox("Places Deleted Successfully.")
+            Dim script As String = "<script>
+                                       Swal.fire({
+                                          title: 'Success!',
+                                          text: 'Data has been Deleted Successfully.',
+                                          icon: 'success',
+                                          confirmButtonText: 'OK'
+                                       });
+                                    </script>"
+
+            ClientScript.RegisterStartupScript(Me.GetType(), "SweetAlert", script)
             Con.Close()
             Populate()
         Catch ex As Exception

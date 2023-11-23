@@ -48,7 +48,16 @@ Public Class Parking
         If Key > 0 Then
 
             If NameS.Text = "" Or LocationS.Text = "" Then
-                MsgBox("Please fill all the fieldes.")
+                Dim script As String = "<script>
+                                       Swal.fire({
+                                          title: 'Error!',
+                                          text: 'Please fill all fields.',
+                                          icon: 'error',
+                                          confirmButtonText: 'OK'
+                                       });
+                                    </script>"
+
+                ClientScript.RegisterStartupScript(Me.GetType(), "SweetAlert", script)
             Else
                 Con.Open()
                 Dim query As String
@@ -56,7 +65,16 @@ Public Class Parking
                 Dim cmd As SqlCommand
                 cmd = New SqlCommand(query, Con)
                 cmd.ExecuteNonQuery()
-                MsgBox("Parking Updated Successfully.")
+                Dim script As String = "<script>
+                                       Swal.fire({
+                                          title: 'Success!',
+                                          text: 'Data has been Updated Successfully.',
+                                          icon: 'success',
+                                          confirmButtonText: 'OK'
+                                       });
+                                    </script>"
+
+                ClientScript.RegisterStartupScript(Me.GetType(), "SweetAlert", script)
                 Con.Close()
                 NameS.Text = ""
                 LocationS.Text = ""
@@ -70,7 +88,16 @@ Public Class Parking
             Dim Location1 = LocationS.Text
 
             If Name1 = "" Or Location1 = "" Then
-                MsgBox("Please fill all the fields.")
+                Dim script As String = "<script>
+                                       Swal.fire({
+                                          title: 'Error!',
+                                          text: 'Please fill all fields.',
+                                          icon: 'error',
+                                          confirmButtonText: 'OK'
+                                       });
+                                    </script>"
+
+                ClientScript.RegisterStartupScript(Me.GetType(), "SweetAlert", script)
             Else
                 Try
                     Con.Open()
@@ -110,7 +137,16 @@ Public Class Parking
 
                     cmdInsert.ExecuteNonQuery()
 
-                    MsgBox("Parking Saved Successfully.")
+                    Dim script As String = "<script>
+                                       Swal.fire({
+                                          title: 'Success!',
+                                          text: 'Data has been Added Successfully.',
+                                          icon: 'success',
+                                          confirmButtonText: 'OK'
+                                       });
+                                    </script>"
+
+                    ClientScript.RegisterStartupScript(Me.GetType(), "SweetAlert", script)
 
                     NameS.Text = ""
                     LocationS.Text = ""
@@ -179,7 +215,16 @@ Public Class Parking
             Dim cmd As SqlCommand = New SqlCommand(query, Con)
             cmd.Parameters.AddWithValue("@Id", Id)
             cmd.ExecuteNonQuery()
-            MsgBox("Parking Deleted Successfully.")
+            Dim script As String = "<script>
+                                       Swal.fire({
+                                          title: 'Success!',
+                                          text: 'Data has been Deleted Successfully.',
+                                          icon: 'success',
+                                          confirmButtonText: 'OK'
+                                       });
+                                    </script>"
+
+            ClientScript.RegisterStartupScript(Me.GetType(), "SweetAlert", script)
             Con.Close()
             Populate()
         Catch ex As Exception
