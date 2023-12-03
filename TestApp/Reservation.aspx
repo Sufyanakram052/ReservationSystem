@@ -26,11 +26,14 @@
                                     <asp:DropDownList ID="DropDownList1" class="form-control col-sm-12" runat="server" DataTextField="Name" DataValueField="Id"></asp:DropDownList>
                                 </div>
 
-                                <%--<div class="col-md-12">
-                                    <asp:CheckBox ID="CheckBox1" runat="server" />
-
-                                    &nbsp;Status
-                                </div>--%>
+                                 <div class="col-sm-12 mb-3">
+                                    <label for="DateS" class="form-label">From Date:</label>
+                                    <asp:TextBox ID="FromDateS" type="datetime-local" class="form-control" runat="server" ViewStateMode="Enabled"></asp:TextBox>
+                                </div>
+                                 <div class="col-sm-12 mb-3">
+                                    <label for="DateS" class="form-label">To Date:</label>
+                                    <asp:TextBox ID="ToDateS" type="datetime-local" class="form-control" runat="server" ViewStateMode="Enabled"></asp:TextBox>
+                                </div>
                                 <div class="col-sm-3 mb-3">
                                     <asp:Button ID="saveAdmin1" class="btn btn-primary col-sm-12" runat="server" Text="Save" />
                                 </div>
@@ -44,7 +47,7 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header bg-primary">
-                        <h5 class="modal-title text-white" id="exampleModalLabel">Add Admin</h5>
+                        <h5 class="modal-title text-white" id="exampleModalLabel">Add Payment</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -67,21 +70,23 @@
         </div>
         <div class="row mb-5 pb-5 mt-4">
             <div class="col-md-12 mb-5 pb-5">
-                <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False" class="table table-striped table-responsive" DataKeyNames="Id">
+                <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False" class="table table-striped table-responsive" DataKeyNames="Id,PlacesId">
                     <Columns>
                         <asp:BoundField DataField="Id" HeaderText="ID" SortExpression="Id" />
                         <asp:BoundField DataField="PlaceName" HeaderText="PlaceName" SortExpression="PlaceName" />
                         <asp:BoundField DataField="CustomerName" HeaderText="CustomerName" SortExpression="CustomerName" />
+                        <asp:BoundField DataField="TotalPrice" HeaderText="TotalPrice" SortExpression="TotalPrice" />
+                        <asp:BoundField DataField="PlacesId" HeaderText="PlacesId" SortExpression="PlacesId" />
                         <asp:BoundField DataField="PlacePrice" HeaderText="PlacePrice" SortExpression="PlacePrice" />
                         <asp:BoundField DataField="ParkingName" HeaderText="ParkingName" SortExpression="ParkingName" />
                         <%--<asp:BoundField DataField="Status" HeaderText="Status" SortExpression="Status" />--%>
 
 
-                        <asp:CommandField SelectText="Edit" ShowSelectButton="True" ControlStyle-CssClass="btn btn-warning" >
+                       <%-- <asp:CommandField SelectText="Edit" ShowSelectButton="True" ControlStyle-CssClass="btn btn-warning" >
 
 
 <ControlStyle CssClass="btn btn-warning"></ControlStyle>
-                        </asp:CommandField>
+                        </asp:CommandField>--%>
 
 
                         <asp:CommandField ShowDeleteButton="True" ControlStyle-CssClass="btn btn-danger" >

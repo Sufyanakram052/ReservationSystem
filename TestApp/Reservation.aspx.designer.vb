@@ -32,6 +32,24 @@ Partial Public Class Reservation
     Protected WithEvents DropDownList1 As Global.System.Web.UI.WebControls.DropDownList
 
     '''<summary>
+    '''FromDateS control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents FromDateS As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''ToDateS control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ToDateS As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
     '''saveAdmin1 control.
     '''</summary>
     '''<remarks>

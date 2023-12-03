@@ -343,6 +343,24 @@ Auto-generated field.
 To modify move field declaration from designer file to code-behind file.
 </remarks>
 </member>
+<member name="F:TestApp.Reservation._FromDateS">
+<summary>
+FromDateS control.
+</summary>
+<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member>
+<member name="F:TestApp.Reservation._ToDateS">
+<summary>
+ToDateS control.
+</summary>
+<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member>
 <member name="F:TestApp.Reservation._saveAdmin1">
 <summary>
 saveAdmin1 control.

@@ -1,4 +1,5 @@
 ﻿Imports System.Data.SqlClient
+Imports System.Security.Cryptography
 Imports System.Web.DynamicData
 
 Public Class Reservation
@@ -16,16 +17,21 @@ Public Class Reservation
     End Sub
 
     Private Sub BindDropDown()
-        Dim query As String = "SELECT Id, Name FROM Places where status = '" & True & "'"
+        Dim query As String = "SELECT Id, CONCAT(Name, ' - ', Price) AS DisplayText FROM Places WHERE status = @Status"
         Con.Open()
-        Using cmd As New SqlCommand(query, Con)
 
+        Using cmd As New SqlCommand(query, Con)
+            ' Assuming Con is your SqlConnection instance
+            cmd.Parameters.AddWithValue("@Status", True)
 
             Using reader As SqlDataReader = cmd.ExecuteReader()
                 DropDownList1.DataSource = reader
+                DropDownList1.DataTextField = "DisplayText" ' Set the display text field
+                DropDownList1.DataValueField = "Id"          ' Set the value field
                 DropDownList1.DataBind()
             End Using
         End Using
+
         Con.Close()
     End Sub
 
@@ -39,11 +45,11 @@ Public Class Reservation
             AdminId = If(Integer.TryParse(Session("AdminId")?.ToString(), AdminId), AdminId, 0)
 
             If AdminId > 0 Then
-                query = "Select r.Id, p.Name As PlaceName, c.Name As CustomerName,p.Price As PlacePrice,r.Status, pr.Name As ParkingName from Reservation r left join Places p on r.PlaceId = p.Id left join Parking pr on p.ParkingId = pr.Id left join Customers c on r.CustomerId = c.Id"
+                query = "Select r.Id, p.Name As PlaceName, r.TotalPrice As TotalPrice, c.Name As CustomerName,p.Price As PlacePrice,p.Id as PlacesId,r.Status, pr.Name As ParkingName from Reservation r left join Places p on r.PlaceId = p.Id left join Parking pr on p.ParkingId = pr.Id left join Customers c on r.CustomerId = c.Id"
             Else
                 CustomerId = If(Integer.TryParse(Session("CustomerId")?.ToString(), AdminId), AdminId, 0)
 
-                query = "Select r.Id, p.Name As PlaceName, c.Name As CustomerName,p.Price As PlacePrice,r.Status, pr.Name As ParkingName from Reservation r left join Places p on r.PlaceId = p.Id left join Parking pr on p.ParkingId = pr.Id left join Customers c on r.CustomerId = c.Id where CustomerId='" & CustomerId & "' "
+                query = "Select r.Id, p.Name As PlaceName,r.TotalPrice As TotalPrice, c.Name As CustomerName,p.Price As PlacePrice,r.Status,p.Id as PlacesId, pr.Name As ParkingName from Reservation r left join Places p on r.PlaceId = p.Id left join Parking pr on p.ParkingId = pr.Id left join Customers c on r.CustomerId = c.Id where CustomerId='" & CustomerId & "' "
             End If
 
             Dim adapter As SqlDataAdapter = New SqlDataAdapter(query, Con)
@@ -82,7 +88,7 @@ Public Class Reservation
         '    Status = False
         'End If
         If Key > 0 Then
-            If PlaceId = 0 Or String.IsNullOrEmpty(CustomerId) Then
+            If PlaceId = 0 Or String.IsNullOrEmpty(CustomerId) Or ToDateS.Text = "" Or FromDateS.Text = "" Then
                 Dim script As String = "<script>
                                        Swal.fire({
                                           title: 'Error!',
@@ -96,7 +102,7 @@ Public Class Reservation
             Else
                 Con.Open()
                 Dim query As String
-                query = "Update Reservation set PlaceId='" & PlaceId & "',CustomerId='" & CustomerId & "',Status='" & Status & "' where Id='" & Key & "'"
+                query = "Update Reservation set PlaceId='" & PlaceId & "',CustomerId='" & CustomerId & "',Status='" & Status & "',FromTime='" & Convert.ToDateTime(FromDateS.Text) & "',ToTime='" & Convert.ToDateTime(ToDateS.Text) & "' where Id='" & Key & "'"
                 Dim cmd As SqlCommand
                 cmd = New SqlCommand(query, Con)
                 cmd.ExecuteNonQuery()
@@ -118,7 +124,7 @@ Public Class Reservation
             End If
 
         Else
-            If PlaceId = 0 Or String.IsNullOrEmpty(CustomerId) Then
+            If PlaceId = 0 Or String.IsNullOrEmpty(CustomerId) Or ToDateS.Text = "" Or FromDateS.Text = "" Then
                 Dim script As String = "<script>
                                        Swal.fire({
                                           title: 'Error!',
@@ -159,14 +165,59 @@ Public Class Reservation
                         newId = 1
                     End If
 
+                    Dim fromDate As DateTime = DateTime.Parse(FromDateS.Text)
+                    Dim toDate As DateTime = DateTime.Parse(ToDateS.Text)
+
+
+                    ' Calculate the time difference in hours with four decimal places
+                    Dim timeDifference As Double = Math.Round((toDate - fromDate).TotalHours, 4)
+
+                    ' Now you have the time difference with four decimal places as a floating-point value
+                    Dim floatTimeDifference As Decimal = Convert.ToDecimal(timeDifference)
+
+                    Dim query As String = "SELECT * FROM Places WHERE id = @Id"
+                    Dim Price As Decimal = 0
+
+                    Using command As New SqlCommand(query, Con)
+                        command.Parameters.AddWithValue("@Id", PlaceId)
+
+                        Using reader As SqlDataReader = command.ExecuteReader()
+                            If reader.Read() Then
+                                ' Data found, populate the textboxes
+                                Price = Convert.ToDecimal(reader("Price"))
+                                ' You may also store the ID in a variable for further use
+                                ' Key = Id
+                            Else
+                                ' No data found for the selected ID
+                                ' Handle the case where the ID doesn't exist in the database
+                                MsgBox("No data found for the selected ID.")
+                            End If
+                        End Using
+                    End Using
+
+                    Dim total = Price * floatTimeDifference
+
+
                     ' Insert the new record with the calculated Id
-                    Dim insertQuery As String = "INSERT INTO Reservation (Id, PlaceId, CustomerId, Status) VALUES (@Id, @PlaceId, @CustomerId, @Status)"
+                    Dim insertQuery As String = "INSERT INTO Reservation (Id, PlaceId, CustomerId, Status, FromTime, ToTime, TotalPrice) VALUES (@Id, @PlaceId, @CustomerId, @Status, @FromTime, @ToTime, @TotalPrice)"
                     Dim cmdInsert As New SqlCommand(insertQuery, Con)
                     cmdInsert.Parameters.AddWithValue("@Id", newId)
                     cmdInsert.Parameters.AddWithValue("@PlaceId", PlaceId)
                     cmdInsert.Parameters.AddWithValue("@CustomerId", CustomerId)
                     cmdInsert.Parameters.AddWithValue("@Status", Status)
+                    cmdInsert.Parameters.AddWithValue("@FromTime", Convert.ToDateTime(FromDateS.Text))
+                    cmdInsert.Parameters.AddWithValue("@ToTime", Convert.ToDateTime(ToDateS.Text))
+                    cmdInsert.Parameters.AddWithValue("@TotalPrice", total)
                     cmdInsert.ExecuteNonQuery()
+
+                    Dim query2 As String
+                    query2 = "Update Places set Status = '" & False & "' where Id= '" & PlaceId & "'"
+                    Dim cmd2 As SqlCommand
+                    cmd2 = New SqlCommand(query2, Con)
+                    cmd2.ExecuteNonQuery()
+
+                    Key = 0
+                    Session("SelectedPlacesId") = Key
 
                     Dim script As String = "<script>
                                        Swal.fire({
@@ -174,14 +225,15 @@ Public Class Reservation
                                           text: 'Data has been Added Successfully.',
                                           icon: 'success',
                                           confirmButtonText: 'OK'
-                                       });
+                                       }).then(function() {
+                                              window.location.href = 'Reservation.aspx';
+                                           });
                                     </script>"
 
                     ClientScript.RegisterStartupScript(Me.GetType(), "SweetAlert", script)
-
                     'CheckBox1.Checked = False
-                    Key = 0
-                    Session("SelectedPlacesId") = Key
+
+
                 Catch ex As Exception
                     ' Handle exceptions
                     MsgBox("An error occurred: " & ex.Message & vbCrLf & ex.StackTrace)
@@ -209,6 +261,8 @@ Public Class Reservation
                         If reader.Read() Then
                             ' Data found, populate the textboxes
                             DropDownList1.SelectedValue = reader("PlaceId")
+                            ToDateS.Text = reader("ToTime")
+                            FromDateS.Text = reader("FromTime")
                             'CheckBox1.Checked = reader("Status")
                             Key = reader("Id")
                             Session("SelectedPlacesId") = Key
@@ -271,7 +325,8 @@ Public Class Reservation
         Dim rowIndex As Integer = e.NewEditIndex
 
         Dim Id As Integer = Integer.Parse(GridView1.DataKeys(rowIndex).Values("Id").ToString())
-
+        Dim PlacesIds As Integer = Integer.Parse(GridView1.DataKeys(rowIndex).Values("PlacesId").ToString())
+        Session("PlacesIds") = PlacesIds
         Con.Open()
         Using Con
             Dim query As String = "SELECT * FROM Reservation WHERE id = @Id And Status= '" & True & "'"
@@ -320,7 +375,8 @@ Public Class Reservation
         Dim resverId = 0
         resverId = If(Integer.TryParse(Session("ReseverId")?.ToString(), resverId), resverId, 0)
 
-
+        Dim PlacesIds = 0
+        PlacesIds = If(Integer.TryParse(Session("PlacesIds")?.ToString(), PlacesIds), PlacesIds, 0)
 
         If resverId > 0 Then
             Con.Open()
@@ -364,16 +420,22 @@ Public Class Reservation
             cmd = New SqlCommand(query, Con)
             cmd.ExecuteNonQuery()
 
+            Dim query2 As String
+            query2 = "Update Places set Status = '" & True & "' where Id= '" & PlacesIds & "'"
+            Dim cmd2 As SqlCommand
+            cmd2 = New SqlCommand(query2, Con)
+            cmd2.ExecuteNonQuery()
+
             Dim script As String = "<script>
-                                       Swal.fire({
-                                          title: 'Success!',
-                                          text: 'Data has been added successfully.',
-                                          icon: 'success',
-                                          confirmButtonText: 'OK'
-                                       }).then(function() {
+                                           Swal.fire({
+                                              title: 'Success!',
+                                              text: 'Payment has been added successfully.',
+                                              icon: 'success',
+                                              confirmButtonText: 'OK'
+                                           }).then(function() {
                                               window.location.href = 'Reservation.aspx';
                                            });
-                                    </script>"
+                                        </script>"
 
             ClientScript.RegisterStartupScript(Me.GetType(), "SweetAlert", script)
 
